@@ -173,7 +173,7 @@ public:
         
     }
 
-    T operator[](int index) const {
+    T operator[](size_t index) const {
         Node* tmp = _head;
         size_t n = 0;
         while (n != index) {
@@ -183,7 +183,7 @@ public:
         return tmp->value;
     }
 
-    T& operator[](int index) {
+    T& operator[](size_t index) {
         Node* tmp = _head;
         size_t n = 0;
         while (n != index) {
@@ -192,6 +192,18 @@ public:
         }
         return tmp->value;
     }
+
+
+    void add(const T& value, int index) {
+        Node* tmp = _head;
+        size_t n = 1;
+        while (n != (index)) {
+            tmp = tmp->next;
+            n++;
+        }
+        tmp->value = value;
+    }
+    
 };
 int main() {
 
@@ -217,7 +229,8 @@ int main() {
     cout << list3 << endl;
     list1.delete_node(6);
     cout << list1 << endl;
-
+    list1.add(6, 3);
+    cout << list1 << endl;
 
 
 
