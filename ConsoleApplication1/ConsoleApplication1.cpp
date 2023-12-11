@@ -6,20 +6,21 @@
 
 using namespace std;
 template<typename T>
-class LinckedList {
-    struct Node {
+struct Node {
 
-        T value;
-        Node* next, * prev;
-        Node() :next(nullptr), prev(nullptr), value(T = {}) {};
-        Node(const T& value) :next(nullptr), prev(nullptr), value(value) {};
-    };
-    Node* _head;
-    Node* _tail;
+    T value;
+    Node* next, * prev;
+    Node() :next(nullptr), prev(nullptr), value(T = {}) {};
+    Node(const T& value) :next(nullptr), prev(nullptr), value(value) {};
+};
+template<typename T>
+class LinckedList {
+    Node<T>* _tail;
+    Node<T>* _head;
 public:
     LinckedList() :_head(nullptr), _tail(nullptr) {}
     LinckedList(const LinckedList& other) {
-        Node* tmp = other._head;
+        Node<T>* tmp = other._head;
         push_tail(tmp->value);
         tmp = tmp->next;
         while (tmp != other._head) {
@@ -29,14 +30,15 @@ public:
     }
     ~LinckedList() {
         while (_head != _tail) {
-            Node* tmp = _head;
+            Node<T>* tmp = _head;
             _head = _head->next;
             delete tmp;
         }
     }
+    
 
     void push_tail(const T& value) {
-        Node* tmp = new Node(value);
+        Node<T>* tmp = new Node<T>(value);
         if (!_head) {
             _tail = _head = tmp;
             _head->next = _head->prev = tmp;
@@ -55,7 +57,7 @@ public:
         if (!other._head) {
             throw length_error("List is empty");
         }
-        Node* current = other._head;
+        Node<T>* current = other._head;
         while (current != other._tail) {
             push_tail(current->value);
             current = current->next;
@@ -64,7 +66,7 @@ public:
     }
 
     void push_head(const T& value) {
-        Node* tmp = new Node(value);
+        Node<T>* tmp = new Node<T>(value);
         if (!_head) {
             _tail = _head = tmp;
         }
@@ -82,7 +84,7 @@ public:
         if (!other._head) {
             throw length_error("List is empty");
         }
-        Node* current = other._tail;
+        Node<T>* current = other._tail;
         while (current != other._head) {
             push_head(current->value);
             current = current->prev;
@@ -92,7 +94,7 @@ public:
   
     void pop_head() {
         if (_head) {
-            Node* tmp = _head;
+            Node<T>* tmp = _head;
 
             if (_head == _tail) {
                 _head = nullptr;
@@ -110,7 +112,7 @@ public:
     }
     void pop_tail() {
         if (_tail) {
-            Node* tmp = _tail;
+            Node<T>* tmp = _tail;
 
             if (_head == _tail) {
                 _head = nullptr;
@@ -127,7 +129,7 @@ public:
 
     }
     friend ostream& operator<<(ostream& os, const LinckedList<T>& other) {
-        Node* tmp = other._head;
+        Node<T>* tmp = other._head;
         if (!other._head) {
             cout << "Empty list!";
         }
@@ -143,7 +145,6 @@ public:
         return os;
 
     }
-
     LinckedList& operator =(const LinckedList<T>& other) {
         if (this != &other) {
             LinckedList tmp(other);
@@ -154,7 +155,7 @@ public:
     }
 
     void delete_node(const T& value) {
-        Node* tmp = _head->next;
+        Node<T>* tmp = _head->next;
         if (_head->value == value)
             this->pop_head();
         while (tmp != _head) {
@@ -195,7 +196,7 @@ public:
 
 
     void add(const T& value, int index) {
-        Node* tmp = _head;
+        Node<T>* tmp = _head;
         size_t n = 1;
         while (n != (index)) {
             tmp = tmp->next;
@@ -204,7 +205,50 @@ public:
         tmp->value = value;
     }
     
+    T generateRandom(random_device& randomDevice) {
+        mt19937_64 generator(randomDevice());
+        if constexpr (numeric_limits<T>::is_integer)
+        {
+            uniform_int_distribution<T> dice(-10, 10);
+            return dice(generator);
+        }
+        else
+        {
+            uniform_real_distribution<T> dice(-10.0, 10.0);
+            return dice(generator);
+        }
+    }
+    LinckedList(int size, const T& min, const T& max) : _head(nullptr), _tail(nullptr) {
+        random_device randomDevice;
+
+        for (int i = 0; i < size; ++i) {
+            T value = generateRandom(randomDevice);
+            push_tail(value, i);
+        }
+    }
+    Node<T>* getHead() const {
+        return _head;
+    }
+    void setHead(Node<T>* other) {
+        this->_head = other;
+    }
 };
+template <typename T>
+void reverseList(LinckedList<T>& dll) {
+    Node<T>* head = dll.getHead();
+    if (!head) {
+        return;
+    }
+    LinckedList<T> tmp_list ;
+    tmp_list.push_head(head->value);
+    head = head->next;
+    while (head != dll.getHead()) {
+        tmp_list.push_head(head->value);
+        head = head->next;
+    }
+    dll = tmp_list;
+
+}
 int main() {
 
     LinckedList<int> list1;
@@ -231,10 +275,16 @@ int main() {
     cout << list1 << endl;
     list1.add(6, 3);
     cout << list1 << endl;
-
-
-
-
+    LinckedList<int> list5;
+    list5.push_tail(1);
+    list5.push_tail(2);
+    list5.push_tail(3);
+    list5.push_tail(5);
+    list5.push_tail(6);
+    list5.push_tail(7);
+    cout << list5 << endl;
+    reverseList<int>(list5);
+    cout << list5 << endl;
 
 
 
