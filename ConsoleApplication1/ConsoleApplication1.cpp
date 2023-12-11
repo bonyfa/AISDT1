@@ -152,6 +152,46 @@ public:
         }
         return *this;
     }
+
+    void delete_node(const T& value) {
+        Node* tmp = _head->next;
+        if (_head->value == value)
+            this->pop_head();
+        while (tmp != _head) {
+            if (tmp->value == value) {
+                if (tmp == _tail)
+                    this->pop_tail();
+                else{
+                    tmp->prev->next = tmp->next;
+                    tmp->next->prev = tmp->prev;
+                    tmp = tmp->next;
+                }
+            }
+            else
+                tmp = tmp->next;
+        }
+        
+    }
+
+    T operator[](int index) const {
+        Node* tmp = _head;
+        size_t n = 0;
+        while (n != index) {
+            tmp = tmp->next;
+            n++;
+        }
+        return tmp->value;
+    }
+
+    T& operator[](int index) {
+        Node* tmp = _head;
+        size_t n = 0;
+        while (n != index) {
+            tmp = tmp->next;
+            n++;
+        }
+        return tmp->value;
+    }
 };
 int main() {
 
@@ -175,8 +215,8 @@ int main() {
     cout << list2 << endl;
     LinckedList<int> list3(list2);
     cout << list3 << endl;
-
-
+    list1.delete_node(6);
+    cout << list1 << endl;
 
 
 
