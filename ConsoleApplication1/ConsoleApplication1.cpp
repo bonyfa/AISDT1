@@ -19,8 +19,13 @@ class LinckedList {
 public:
     LinckedList() :_head(nullptr), _tail(nullptr) {}
     LinckedList(const LinckedList& other) {
-
-
+        Node* tmp = other._head;
+        push_tail(tmp->value);
+        tmp = tmp->next;
+        while (tmp != other._head) {
+            push_tail(tmp->value);
+            tmp = tmp->next;
+        }
     }
     ~LinckedList() {
         while (_head != _tail) {
@@ -29,6 +34,7 @@ public:
             delete tmp;
         }
     }
+
     void push_tail(const T& value) {
         Node* tmp = new Node(value);
         if (!_head) {
@@ -41,21 +47,22 @@ public:
             tmp->next = _head;
             tmp->prev = _tail;
             _tail = tmp;
+            _head = _tail->next;
         }
     }
+
     void push_tail(const LinckedList& other) {
         if (!other._head) {
-            
+            throw length_error("List is empty");
         }
-        else
-        {
-            this->_tail->next = other->_head;
-            other->_head->prev = this->_tail;
-            this->_head->prev = other->_tail;
-            other->_tail->next = this->_head;
-            this->_tail = other->_tail;
+        Node* current = other._head;
+        while (current != other._tail) {
+            push_tail(current->value);
+            current = current->next;
         }
+        push_tail(other._tail->value);
     }
+
     void push_head(const T& value) {
         Node* tmp = new Node(value);
         if (!_head) {
@@ -67,21 +74,59 @@ public:
             tmp->next = _head;
             tmp->prev = _tail;
             _head = tmp;
+            _tail = _head->prev;
         }
     }
-    void push_head(const LinckedList& other) {
 
+    void push_head(const LinckedList& other) {
         if (!other._head) {
-            
+            throw length_error("List is empty");
         }
-        else
-        this->_tail->next = other->_head;
-        other->_head->prev = this->_tail;
-        this->_head->prev = other->_tail;
-        other->_tail->next = this->_head;
-        this->_tail = other->_tail;
+        Node* current = other._tail;
+        while (current != other._head) {
+            push_head(current->value);
+            current = current->prev;
+        }
+        push_head(other._head->value);
     }
-    friend ostream& operator<<(ostream& os, LinckedList<T>& other) {
+  
+    void pop_head() {
+        if (_head) {
+            Node* tmp = _head;
+
+            if (_head == _tail) {
+                _head = nullptr;
+                _tail = nullptr;
+            }
+            else {
+                _head = _head->next;
+                _head->prev = _tail;
+                _tail->next = _head;
+            }
+
+            delete tmp;
+        }
+
+    }
+    void pop_tail() {
+        if (_tail) {
+            Node* tmp = _tail;
+
+            if (_head == _tail) {
+                _head = nullptr;
+                _tail = nullptr;
+            }
+            else {
+                _tail = _tail->prev;
+                _tail->next = _head;
+                _head->prev = _tail;
+            }
+
+            delete tmp;
+        }
+
+    }
+    friend ostream& operator<<(ostream& os, const LinckedList<T>& other) {
         Node* tmp = other._head;
         if (!other._head) {
             cout << "Empty list!";
@@ -98,7 +143,15 @@ public:
         return os;
 
     }
-    LinckedList & operator =(const LinckedList)
+
+    LinckedList& operator =(const LinckedList<T>& other) {
+        if (this != &other) {
+            LinckedList tmp(other);
+            swap(tmp._head, _head);
+            swap(tmp._tail, _tail);
+        }
+        return *this;
+    }
 };
 int main() {
 
@@ -112,5 +165,24 @@ int main() {
     list2.push_head(6);
     cout << list1 << endl;
     cout << list2 << endl;
-    
+    list1.push_tail(list2);
+    list1.push_head(list2);
+    cout << list1 << endl;
+    cout << list1 << endl;
+    list1.pop_head();
+    list2.pop_tail();
+    cout << list1 << endl;
+    cout << list2 << endl;
+    LinckedList<int> list3(list2);
+    cout << list3 << endl;
+
+
+
+
+
+
+
+
+
+
 }
