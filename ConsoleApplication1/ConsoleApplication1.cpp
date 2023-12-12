@@ -223,7 +223,7 @@ public:
 
         for (int i = 0; i < size; ++i) {
             T value = generateRandom(randomDevice);
-            push_tail(value, i);
+            push_tail(value);
         }
     }
     Node<T>* getHead() const {
@@ -259,22 +259,22 @@ int main() {
     list2.push_head(4);
     list2.push_head(5);
     list2.push_head(6);
-    cout << list1 << endl;
-    cout << list2 << endl;
+    cout << " push_tail(T):list1 = " << list1 << endl;
+    cout << " push_head(T):list2 = " << list2 << endl;
     list1.push_tail(list2);
     list1.push_head(list2);
-    cout << list1 << endl;
-    cout << list1 << endl;
+    cout << " push_tail (list):list1 =" << list1 << endl;
+    cout << "push_head (по другому списку)list):list2 = " << list2 << endl;
     list1.pop_head();
     list2.pop_tail();
-    cout << list1 << endl;
-    cout << list2 << endl;
+    cout << " pop_head:list1 = " << list1 << endl;
+    cout << " pop_tail:list2 = " << list2 << endl;
     LinckedList<int> list3(list2);
-    cout << list3 << endl;
+    cout << "copy construction: list3(list2) = " << list3 << endl;
     list1.delete_node(6);
-    cout << list1 << endl;
+    cout << " delete_node(): list1 delete 6 = " << list3 << endl;
     list1.add(6, 3);
-    cout << list1 << endl;
+    cout << "add(): list1 add 6 on 3 pos = " << list3 << endl;
     LinckedList<int> list5;
     list5.push_tail(1);
     list5.push_tail(2);
@@ -282,9 +282,11 @@ int main() {
     list5.push_tail(5);
     list5.push_tail(6);
     list5.push_tail(7);
-    cout << list5 << endl;
+    cout << " list5:  " << list5 << endl;
     reverseList<int>(list5);
-    cout << list5 << endl;
+    cout <<"reserve"<< list5 << endl;
+    LinckedList<int> list6(5,1,10);
+    cout << "random" << list6 << endl;
 
 
 
